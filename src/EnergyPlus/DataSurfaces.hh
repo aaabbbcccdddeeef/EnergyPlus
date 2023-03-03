@@ -239,7 +239,19 @@ namespace DataSurfaces {
         Num                  // count, always the final element
     };
 
-    constexpr std::array<std::string_view, static_cast<int>(DataSurfaces::HeatTransferModel::Num)> HeatTransAlgoStrs = {
+    static constexpr std::array<std::string_view, static_cast<int>(HeatTransferModel::Num)> HeatTransferModelNamesUC = {
+        "NONE",
+        "CONDUCTIONTRANSFERFUNCTION",
+        "MOISTUREPENETRATIONDEPTHCONDUCTIONTRANSFERFUNCTION",
+        "CONDUCTIONFINITEDIFFERENCE",
+        "COMBINEDHEATANDMOISTUREFINITEELEMENT",
+	"WINDOW5",
+        "COMPLEXFENESTRATION",
+        "TDD",
+        "KIVA"
+        "AIRBOUNDARYNOHT"};	
+
+     constexpr std::array<std::string_view, static_cast<int>(HeatTransferModel::Num)> HeatTransAlgoStrs = {
         "None",
         "CTF - ConductionTransferFunction",
         "EMPD - MoisturePenetrationDepthConductionTransferFunction",

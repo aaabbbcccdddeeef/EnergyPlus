@@ -83,7 +83,7 @@ namespace InternalHeatGains {
     void GetInternalHeatGainsInput(EnergyPlusData &state);
 
     void setupIHGZonesAndSpaces(EnergyPlusData &state,
-                                const std::string objectType,
+                                std::string_view objectType,
                                 EPVector<InternalHeatGains::GlobalInternalGainMiscObject> &inputObjects,
                                 int &numInputObjects,
                                 int &numGainInstances,

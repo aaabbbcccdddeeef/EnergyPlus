@@ -133,7 +133,7 @@ public:
 
     int getIntFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName);
 
-    const json &getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord);
+    const json &getObjectSchemaProps(EnergyPlusData &state, std::string_view objectWord);
 
     std::pair<std::string, bool> getObjectItemValue(std::string const &field_value, json const &schema_field_obj);
 

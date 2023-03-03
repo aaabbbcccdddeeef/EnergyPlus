@@ -78,6 +78,9 @@ enum class TARCOGLayerType : int
     Num
 };
 
+static constexpr std::array<std::string_view, static_cast<int>(TARCOGLayerType::Num)> LayerTypeNamesUC = {
+    "SPECULAR", "VENETIANHORIZONTAL", "WOVEN", "PERFORATED", "OTHERSHADINGTYPE", "BSDF", "VENETIANVERTICAL"};
+	
 //  Thermal models:
 enum class TARCOGThermalModel : int
 {
@@ -89,6 +92,9 @@ enum class TARCOGThermalModel : int
     Num
 };
 
+static constexpr std::array<std::string_view, static_cast<int>(TARCOGThermalModel::Num)> ThermalModelNamesUC = {
+    "ISO15099", "SCALEDCAVITYWIDTH", "CONVECTIVESCALARMODEL_NOSDTHICKNESS", "CONVECTIVESCALARMODEL_WITHSDTHICKNESS"};
+	
 int constexpr YES_SupportPillar = 1;
 
 // Deflection parameters
@@ -100,6 +106,9 @@ enum class DeflectionCalculation : int
     GAP_WIDTHS,
     Num
 };
+
+static constexpr std::array<std::string_view, static_cast<int>(DeflectionCalculation::Num)> DeflectionCalculationNamesUC = {
+    "NODEFLECTION", "TEMPERATUREANDPRESSUREINPUT", "MEASUREDDEFLECTION"};
 
 // definition of parameters for deflection sum.  These parameters define maximum number of loop to which sum
 // will perform. By equation, these numbers will go to infinite and some test showed that going to NMax and MMax

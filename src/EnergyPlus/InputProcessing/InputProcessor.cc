@@ -722,10 +722,10 @@ int InputProcessor::getIntFieldValue(json const &ep_object, json const &schema_o
     return value;
 }
 
-const json &InputProcessor::getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord)
+const json &InputProcessor::getObjectSchemaProps(EnergyPlusData &state, std::string_view objectWord)
 {
     auto const &schema_properties = schema().at("properties");
-    const json &object_schema = schema_properties.at(objectWord);
+    const json &object_schema = schema_properties.at(std::string(objectWord)); // why do we need to do std::string()?
     assert(!object_schema.empty()); // If this fails, the object type does not exist in the schema
 
     auto const &schema_obj_props = getPatternProperties(state, object_schema);

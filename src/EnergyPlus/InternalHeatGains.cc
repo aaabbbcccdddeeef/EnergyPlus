@@ -221,7 +221,7 @@ namespace InternalHeatGains {
             "! <{} Internal Gains Nominal>,Name,Schedule Name,Zone Name,Zone Floor Area {{m2}},# Zone Occupants,{}");
         static constexpr std::string_view Format_724(" {}, {}\n");
 
-        auto print_and_divide_if_greater_than_zero = [&](const Real64 numerator, const Real64 denominator) {
+        auto print_and_divide_if_greater_than_zero = [&](const Real64 numerator, const Real64 denominator) { // (THIS_AUTO_OK)
             if (denominator > 0.0) {
                 print(state.files.eio, "{:.3R},", numerator / denominator);
             } else {
@@ -246,16 +246,16 @@ namespace InternalHeatGains {
             RepVarSet(zoneNum) = true;
         }
 
-        const std::string peopleModuleObject = "People";
-        const std::string lightsModuleObject = "Lights";
-        const std::string elecEqModuleObject = "ElectricEquipment";
-        const std::string gasEqModuleObject = "GasEquipment";
-        const std::string hwEqModuleObject = "HotWaterEquipment";
-        const std::string stmEqModuleObject = "SteamEquipment";
-        const std::string othEqModuleObject = "OtherEquipment";
-        const std::string itEqModuleObject = "ElectricEquipment:ITE:AirCooled";
-        const std::string bbModuleObject = "ZoneBaseboard:OutdoorTemperatureControlled";
-        const std::string contamSSModuleObject = "ZoneContaminantSourceAndSink:CarbonDioxide";
+        constexpr std::string_view peopleModuleObject = "People";
+        constexpr std::string_view lightsModuleObject = "Lights";
+        constexpr std::string_view elecEqModuleObject = "ElectricEquipment";
+        constexpr std::string_view gasEqModuleObject = "GasEquipment";
+        constexpr std::string_view hwEqModuleObject = "HotWaterEquipment";
+        constexpr std::string_view stmEqModuleObject = "SteamEquipment";
+        constexpr std::string_view othEqModuleObject = "OtherEquipment";
+        constexpr std::string_view itEqModuleObject = "ElectricEquipment:ITE:AirCooled";
+        constexpr std::string_view bbModuleObject = "ZoneBaseboard:OutdoorTemperatureControlled";
+        constexpr std::string_view contamSSModuleObject = "ZoneContaminantSourceAndSink:CarbonDioxide";
 
         // Because there are occassions where getObjectItem will be called a second time within the routine (#9680)
         // We should use local arrays instead of state.dataIPShortCut
@@ -272,7 +272,8 @@ namespace InternalHeatGains {
             int MaxAlphas = 0;
             int MaxNums = 0;
             int NumParams = 0;
-            for (const auto &moduleName : {peopleModuleObject,
+            // std::string_view & is very weird, but g++ complains about std::string_view here and suggests it
+            for (const std::string_view &moduleName : {peopleModuleObject, 
                                            lightsModuleObject,
                                            elecEqModuleObject,
                                            gasEqModuleObject,
@@ -300,7 +301,7 @@ namespace InternalHeatGains {
         // PEOPLE: Includes both information related to the heat balance and thermal comfort
         EPVector<InternalHeatGains::GlobalInternalGainMiscObject> peopleObjects;
         int numPeopleStatements = 0;
-        setupIHGZonesAndSpaces(state, peopleModuleObject, peopleObjects, numPeopleStatements, state.dataHeatBal->TotPeople, ErrorsFound);
+        setupIHGZonesAndSpaces(state, std::string(peopleModuleObject), peopleObjects, numPeopleStatements, state.dataHeatBal->TotPeople, ErrorsFound);
 
         if (state.dataHeatBal->TotPeople > 0) {
             state.dataHeatBal->People.allocate(state.dataHeatBal->TotPeople);
@@ -2686,7 +2687,7 @@ namespace InternalHeatGains {
                         thisZoneOthEq.otherEquipFuelTypeString = FuelTypeString; // Save for output variable setup later
                         // Build list of fuel types used in each zone and space (excluding None and Water)
                         bool found = false;
-                        for (auto fuelType : state.dataHeatBal->Zone(zoneNum).otherEquipFuelTypeNums) {
+                        for (ExteriorEnergyUse::ExteriorFuelUsage fuelType : state.dataHeatBal->Zone(zoneNum).otherEquipFuelTypeNums) {
                             if (thisZoneOthEq.OtherEquipFuelType == fuelType) {
                                 found = true;
                                 break;
@@ -2697,7 +2698,7 @@ namespace InternalHeatGains {
                             state.dataHeatBal->Zone(zoneNum).otherEquipFuelTypeNames.emplace_back(FuelTypeString);
                         }
                         found = false;
-                        for (auto fuelType : state.dataHeatBal->space(spaceNum).otherEquipFuelTypeNums) {
+                        for (ExteriorEnergyUse::ExteriorFuelUsage fuelType : state.dataHeatBal->space(spaceNum).otherEquipFuelTypeNums) {
                             if (thisZoneOthEq.OtherEquipFuelType == fuelType) {
                                 found = true;
                                 break;
@@ -3247,7 +3248,7 @@ namespace InternalHeatGains {
                         if (zoneEqIndex > 0) { // zoneEqIndex could be zero in the case of an uncontrolled zone
                             auto itStart = state.dataZoneEquip->ZoneEquipConfig(zoneEqIndex).InletNode.begin();
                             auto itEnd = state.dataZoneEquip->ZoneEquipConfig(zoneEqIndex).InletNode.end();
-                            auto key = thisZoneITEq.SupplyAirNodeNum;
+                            int key = thisZoneITEq.SupplyAirNodeNum;
                             thisZoneITEq.inControlledZone = true;
                             bool supplyNodeFound = false;
                             if (std::find(itStart, itEnd, key) != itEnd) {
@@ -4135,7 +4136,7 @@ namespace InternalHeatGains {
     }
 
     void setupIHGZonesAndSpaces(EnergyPlusData &state,
-                                const std::string objectType,
+                                std::string_view objectType,
                                 EPVector<InternalHeatGains::GlobalInternalGainMiscObject> &inputObjects,
                                 int &numInputObjects,
                                 int &numGainInstances,
@@ -4149,10 +4150,11 @@ namespace InternalHeatGains {
         constexpr std::string_view routineName = "setupIHGZonesAndSpaces: ";
         bool localErrFlag = false;
 
+	std::string objectType2 = std::string(objectType); // Why do we still need to do this?
         auto &ip = state.dataInputProcessing->inputProcessor;
-        auto const instances = ip->epJSON.find(objectType);
+        auto const instances = ip->epJSON.find(objectType2);
         if (instances != ip->epJSON.end()) {
-            auto const &objectSchemaProps = ip->getObjectSchemaProps(state, objectType);
+            auto const &objectSchemaProps = ip->getObjectSchemaProps(state, objectType2);
             auto &instancesValue = instances.value();
             numInputObjects = int(instancesValue.size());
             inputObjects.allocate(numInputObjects);
@@ -4162,11 +4164,11 @@ namespace InternalHeatGains {
             for (auto instance = instancesValue.begin(); instance != instancesValue.end(); ++instance) {
                 auto const &objectFields = instance.value();
                 std::string const &thisObjectName = UtilityRoutines::MakeUPPERCase(instance.key());
-                ip->markObjectAsUsed(objectType, instance.key());
+                ip->markObjectAsUsed(objectType2, instance.key());
 
                 // For incoming idf, maintain object order
                 ++counter;
-                int objNum = ip->getIDFObjNum(state, objectType, counter);
+                int objNum = ip->getIDFObjNum(state, objectType2, counter);
                 inputObjects(objNum).Name = thisObjectName;
                 std::string areaFieldName;
                 if (zoneListNotAllowed) {
@@ -7898,7 +7900,7 @@ namespace InternalHeatGains {
             state.dataHeatBal->spaceRpt(spaceNum).SumToutMinusTSup = 0.0;
         } // Space init spaceNum
 
-        for (Loop = 1; Loop <= state.dataHeatBal->TotITEquip; ++Loop) {
+        for (int Loop = 1; Loop <= state.dataHeatBal->TotITEquip; ++Loop) {
             // Get schedules
             NZ = state.dataHeatBal->ZoneITEq(Loop).ZonePtr;
             auto &thisZoneHB = state.dataZoneTempPredictorCorrector->zoneHeatBalance(NZ);

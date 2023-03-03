@@ -342,7 +342,7 @@ namespace HeatBalanceIntRadExchange {
                     auto const &rec_construct(state.dataConstruction->Construct(ConstrNumRec));
                     auto &netLWRadToRecSurf(NetLWRadToSurf(RecSurfNum));
                     if (rec_construct.TypeIsWindow) {
-                        //                        auto& rec_surface_window(SurfaceWindow(RecSurfNum));
+                        // auto &rec_surface_window(SurfaceWindow(RecSurfNum));
                         Real64 CarrollMRTInKTo4thWin = CarrollMRTInKTo4th; // arbitrary value, IR will be zero
                         Real64 CarrollMRTNumeratorWin(0.0);
                         Real64 CarrollMRTDenominatorWin(0.0);
@@ -371,7 +371,7 @@ namespace HeatBalanceIntRadExchange {
                     // Calculate net long-wave radiation for opaque surfaces and incident
                     // long-wave radiation for windows.
                     if (rec_construct.TypeIsWindow) {      // Window
-                                                           //                        auto& rec_surface_window(SurfaceWindow(RecSurfNum));
+                                                           // auto &rec_surface_window(SurfaceWindow(RecSurfNum));
                         Real64 scriptF_acc(0.0);           // Local accumulator
                         Real64 netLWRadToRecSurf_cor(0.0); // Correction
                         Real64 IRfromParentZone_acc(0.0);  // Local accumulator
@@ -418,8 +418,8 @@ namespace HeatBalanceIntRadExchange {
 
         // Automatic Surface Multipliers: Update values of surfaces not simulated
         if (state.dataSurface->UseRepresentativeSurfaceCalculations) {
-            for (auto SurfNum : state.dataSurface->AllHTSurfaceList) {
-                auto &RepSurfNum = state.dataSurface->Surface(SurfNum).RepresentativeCalcSurfNum;
+		for (int SurfNum : state.dataSurface->AllHTSurfaceList) {
+                int RepSurfNum = state.dataSurface->Surface(SurfNum).RepresentativeCalcSurfNum;
                 if (SurfNum != RepSurfNum) {
                     state.dataSurface->SurfWinIRfromParentZone(SurfNum) = state.dataSurface->SurfWinIRfromParentZone(RepSurfNum);
                     NetLWRadToSurf(SurfNum) = NetLWRadToSurf(RepSurfNum);
@@ -665,7 +665,7 @@ namespace HeatBalanceIntRadExchange {
                               thisEnclosure.Emissivity(SurfNum),
                               state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Sides);
                         for (int Vindex = 1; Vindex <= state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Sides; ++Vindex) {
-                            auto &Vertex = state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Vertex(Vindex);
+                            auto const &Vertex = state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Vertex(Vindex);
                             print(state.files.eio, ",{:.4R},{:.4R},{:.4R}", Vertex.x, Vertex.y, Vertex.z);
                         }
                         print(state.files.eio, "\n");
@@ -964,7 +964,7 @@ namespace HeatBalanceIntRadExchange {
                           state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Sides);
 
                     for (int Vindex = 1; Vindex <= state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Sides; ++Vindex) {
-                        auto &Vertex = state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Vertex(Vindex);
+                        auto const &Vertex = state.dataSurface->Surface(thisEnclosure.SurfacePtr(SurfNum)).Vertex(Vindex);
                         print(state.files.eio, ",{:.4R},{:.4R},{:.4R}", Vertex.x, Vertex.y, Vertex.z);
                     }
                     print(state.files.eio, "\n");

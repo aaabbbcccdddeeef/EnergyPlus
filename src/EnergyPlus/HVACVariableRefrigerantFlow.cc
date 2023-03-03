@@ -1401,8 +1401,6 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
     using NodeInputManager::GetOnlySingleNode;
     using ScheduleManager::CheckScheduleValueMinMax;
     using ScheduleManager::GetScheduleIndex;
-    auto &GetDXCoilInletNode(DXCoils::GetCoilInletNode);
-    auto &GetDXCoilOutletNode(DXCoils::GetCoilOutletNode);
     using DataSizing::AutoSize;
     using DXCoils::GetCoilCondenserInletNode;
     using DXCoils::GetCoilTypeNum;
@@ -1775,7 +1773,7 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                                  cAlphaFieldNames(12));  // Field Name
             if (!ErrorsFound) {
                 //     Test PLF curve minimum and maximum. Cap if less than 0.7 or greater than 1.0.
-                auto [MinCurvePLR, MinCurveVal, MaxCurvePLR, MaxCurveVal] = checkCurveMinMaxOutput(thisVrfSys.CoolPLFFPLR);
+		    auto [MinCurvePLR, MinCurveVal, MaxCurvePLR, MaxCurveVal] = checkCurveMinMaxOutput(thisVrfSys.CoolPLFFPLR); // (THIS_AUTO_OK)
 
                 if (MinCurveVal < 0.7) {
                     ShowWarningError(state, format("{}{}=\"{}\", invalid", RoutineName, cCurrentModuleObject, thisVrfSys.Name));
@@ -1969,7 +1967,7 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                                  cAlphaFieldNames(23));  // Field Name
 
             if (!ErrorsFound) {
-                auto [MinCurvePLR, MinCurveVal, MaxCurvePLR, MaxCurveVal] = checkCurveMinMaxOutput(thisVrfSys.HeatPLFFPLR);
+                auto [MinCurvePLR, MinCurveVal, MaxCurvePLR, MaxCurveVal] = checkCurveMinMaxOutput(thisVrfSys.HeatPLFFPLR); // (THIS_AUTO_OK)
 
                 if (MinCurveVal < 0.7) {
                     ShowWarningError(state, format("{}{}=\"{}\", invalid", RoutineName, cCurrentModuleObject, thisVrfSys.Name));
@@ -3610,9 +3608,9 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                        thisVrfTU.CoolCoilIndex,
                                        errFlag,
                                        DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Cooling));
-                        CCoilInletNodeNum = GetDXCoilInletNode(
+                        CCoilInletNodeNum = DXCoils::GetCoilInletNode(
                             state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Cooling), cAlphaArgs(12), errFlag);
-                        CCoilOutletNodeNum = GetDXCoilOutletNode(
+                        CCoilOutletNodeNum = DXCoils::GetCoilOutletNode(
                             state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Cooling), cAlphaArgs(12), errFlag);
                         thisVrfTU.coolCoilAirInNode = CCoilInletNodeNum;
                         thisVrfTU.coolCoilAirOutNode = CCoilOutletNodeNum;
@@ -3708,9 +3706,9 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                        errFlag,
                                        DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Cooling));
                         CCoilInletNodeNum =
-                            GetDXCoilInletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Cooling), cAlphaArgs(12), errFlag);
+                            DXCoils::GetCoilInletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Cooling), cAlphaArgs(12), errFlag);
                         CCoilOutletNodeNum =
-                            GetDXCoilOutletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Cooling), cAlphaArgs(12), errFlag);
+                            DXCoils::GetCoilOutletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Cooling), cAlphaArgs(12), errFlag);
                         thisVrfTU.coolCoilAirInNode = CCoilInletNodeNum;
                         thisVrfTU.coolCoilAirOutNode = CCoilOutletNodeNum;
 
@@ -3790,9 +3788,9 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                        thisVrfTU.HeatCoilIndex,
                                        errFlag,
                                        DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Heating));
-                        HCoilInletNodeNum = GetDXCoilInletNode(
+                        HCoilInletNodeNum = DXCoils::GetCoilInletNode(
                             state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Heating), cAlphaArgs(14), errFlag);
-                        HCoilOutletNodeNum = GetDXCoilOutletNode(
+                        HCoilOutletNodeNum = DXCoils::GetCoilOutletNode(
                             state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_FluidTCtrl_Heating), cAlphaArgs(14), errFlag);
                         thisVrfTU.heatCoilAirInNode = HCoilInletNodeNum;
                         thisVrfTU.heatCoilAirOutNode = HCoilOutletNodeNum;
@@ -4047,9 +4045,9 @@ void GetVRFInputData(EnergyPlusData &state, bool &ErrorsFound)
                                        errFlag,
                                        DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Heating));
                         HCoilInletNodeNum =
-                            GetDXCoilInletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Heating), cAlphaArgs(14), errFlag);
+                            DXCoils::GetCoilInletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Heating), cAlphaArgs(14), errFlag);
                         HCoilOutletNodeNum =
-                            GetDXCoilOutletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Heating), cAlphaArgs(14), errFlag);
+                            DXCoils::GetCoilOutletNode(state, DataHVACGlobals::cAllCoilTypes(DataHVACGlobals::CoilVRF_Heating), cAlphaArgs(14), errFlag);
                         thisVrfTU.heatCoilAirInNode = HCoilInletNodeNum;
                         thisVrfTU.heatCoilAirOutNode = HCoilOutletNodeNum;
 
@@ -7581,7 +7579,6 @@ void SizeVRF(EnergyPlusData &state, int const VRFTUNum)
 
     using namespace DataSizing;
     using Curve::CurveValue;
-    auto &GetDXCoilCap(DXCoils::GetCoilCapacityByIndexType);
     using DataHVACGlobals::CoolingAirflowSizing;
     using DataHVACGlobals::CoolingCapacitySizing;
     using DataHVACGlobals::HeatingAirflowSizing;
@@ -8402,7 +8399,7 @@ void SizeVRF(EnergyPlusData &state, int const VRFTUNum)
         for (NumTU = 1; NumTU <= state.dataHVACVarRefFlow->TerminalUnitList(TUListNum).NumTUInList; ++NumTU) {
             TUIndex = state.dataHVACVarRefFlow->TerminalUnitList(TUListNum).ZoneTUPtr(NumTU);
             if (state.dataHVACVarRefFlow->VRFTU(TUIndex).CoolCoilIndex > 0) {
-                DXCoilCap = GetDXCoilCap(state,
+                DXCoilCap = DXCoils::GetCoilCapacityByIndexType(state,
                                          state.dataHVACVarRefFlow->VRFTU(TUIndex).CoolCoilIndex,
                                          state.dataHVACVarRefFlow->VRFTU(TUIndex).DXCoolCoilType_Num,
                                          errFlag);
@@ -8413,7 +8410,7 @@ void SizeVRF(EnergyPlusData &state, int const VRFTUNum)
                 }
             }
             if (state.dataHVACVarRefFlow->VRFTU(TUIndex).HeatCoilIndex > 0) {
-                DXCoilCap = GetDXCoilCap(state,
+                DXCoilCap = DXCoils::GetCoilCapacityByIndexType(state,
                                          state.dataHVACVarRefFlow->VRFTU(TUIndex).HeatCoilIndex,
                                          state.dataHVACVarRefFlow->VRFTU(TUIndex).DXHeatCoilType_Num,
                                          errFlag);
