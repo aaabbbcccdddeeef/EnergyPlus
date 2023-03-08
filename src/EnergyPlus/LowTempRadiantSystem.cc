@@ -5230,11 +5230,8 @@ namespace LowTempRadiantSystem {
         // iterating orwe had to go back and shorten the time step.  As a result, we have to subtract out the previous value that we
         // added.  If the system time step elapsed is different, then we just need to add the new values to the running average.
 
-        // Using/Aliasing
-        Real64 SysTimeElapsed = state.dataHVACGlobal->SysTimeElapsed;
         Real64 TimeStepSys = state.dataHVACGlobal->TimeStepSys;
-
-        // SUBROUTINE PARAMETER DEFINITIONS:
+        Real64 SysTimeElapsed = state.dataHVACGlobal->SysTimeElapsed;
 
         for (int radSurfNum = 1; radSurfNum <= this->NumOfSurfaces; ++radSurfNum) {
 
@@ -5834,7 +5831,8 @@ namespace LowTempRadiantSystem {
     {
         auto &thisZone = state.dataHeatBal->Zone(this->ZonePtr);
 
-        Real64 TimeStepSys = state.dataHVACGlobal->TimeStepSys;
+        // Using/Aliasing
+        Real64 TimeStepSysSec = state.dataHVACGlobal->TimeStepSysSec;
 
         Real64 totalRadSysPower(0.0); // Total source/sink power for the radiant system (sum of all surfaces of the system)
 
@@ -5864,11 +5862,11 @@ namespace LowTempRadiantSystem {
             this->WaterOutletTemp = this->WaterInletTemp;
         }
 
-        this->HeatEnergy = this->HeatPower * TimeStepSys * DataGlobalConstants::SecInHour;
-        this->CoolEnergy = this->CoolPower * TimeStepSys * DataGlobalConstants::SecInHour;
+        this->HeatEnergy = this->HeatPower * TimeStepSysSec;
+        this->CoolEnergy = this->CoolPower * TimeStepSysSec;
 
         if (this->CondCausedShutDown) {
-            this->CondCausedTimeOff = TimeStepSys * DataGlobalConstants::SecInHour;
+            this->CondCausedTimeOff = TimeStepSysSec;
         } else {
             this->CondCausedTimeOff = 0.0;
         }
@@ -5879,7 +5877,9 @@ namespace LowTempRadiantSystem {
 
         auto &thisZone = state.dataHeatBal->Zone(this->ZonePtr);
 
-        Real64 TimeStepSys = state.dataHVACGlobal->TimeStepSys;
+        // Using/Aliasing
+        Real64 TimeStepSysSec = state.dataHVACGlobal->TimeStepSysSec;
+
         using FluidProperties::GetSpecificHeatGlycol;
 
         constexpr std::string_view routineName("ReportConstantFlowSystem");
@@ -5939,13 +5939,13 @@ namespace LowTempRadiantSystem {
             this->PumpHeattoFluid = 0.0;
         }
 
-        this->HeatEnergy = this->HeatPower * TimeStepSys * DataGlobalConstants::SecInHour;
-        this->CoolEnergy = this->CoolPower * TimeStepSys * DataGlobalConstants::SecInHour;
-        this->PumpEnergy = this->PumpPower * TimeStepSys * DataGlobalConstants::SecInHour;
-        this->PumpHeattoFluidEnergy = this->PumpHeattoFluid * TimeStepSys * DataGlobalConstants::SecInHour;
+        this->HeatEnergy = this->HeatPower * TimeStepSysSec;
+        this->CoolEnergy = this->CoolPower * TimeStepSysSec;
+        this->PumpEnergy = this->PumpPower * TimeStepSysSec;
+        this->PumpHeattoFluidEnergy = this->PumpHeattoFluid * TimeStepSysSec;
 
         if (this->CondCausedShutDown) {
-            this->CondCausedTimeOff = TimeStepSys * DataGlobalConstants::SecInHour;
+            this->CondCausedTimeOff = TimeStepSysSec;
         } else {
             this->CondCausedTimeOff = 0.0;
         }
@@ -5955,7 +5955,8 @@ namespace LowTempRadiantSystem {
     {
 
         auto &thisZone = state.dataHeatBal->Zone(this->ZonePtr);
-        Real64 TimeStepSys = state.dataHVACGlobal->TimeStepSys;
+        Real64 TimeStepSysSec = state.dataHVACGlobal->TimeStepSysSec;
+        // Using/Aliasing
 
         Real64 totalRadSysPower(0.0); // Total source/sink power for the radiant system (sum of all surfaces of the system)
 
@@ -5966,7 +5967,7 @@ namespace LowTempRadiantSystem {
         totalRadSysPower *= double(thisZone.Multiplier * thisZone.ListMultiplier);
 
         this->ElecPower = totalRadSysPower;
-        this->ElecEnergy = this->ElecPower * TimeStepSys * DataGlobalConstants::SecInHour;
+        this->ElecEnergy = this->ElecPower * TimeStepSysSec;
         this->HeatPower = this->ElecPower;
         this->HeatEnergy = this->ElecEnergy;
     }

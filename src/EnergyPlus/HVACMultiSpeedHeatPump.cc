@@ -4265,9 +4265,9 @@ namespace HVACMultiSpeedHeatPump {
         auto &thisMSHeatPump = state.dataHVACMultiSpdHP->MSHeatPump(MSHeatPumpNum);
         auto &thisMSHeatPumpReport = state.dataHVACMultiSpdHP->MSHeatPumpReport(MSHeatPumpNum);
 
-        Real64 ReportingConstant = state.dataHVACGlobal->TimeStepSys * DataGlobalConstants::SecInHour;
-        thisMSHeatPumpReport.ElecPowerConsumption = thisMSHeatPump.ElecPower * ReportingConstant; // + &
-        thisMSHeatPumpReport.HeatRecoveryEnergy = thisMSHeatPump.HeatRecoveryRate * ReportingConstant;
+        Real64 TimeStepSysSec = state.dataHVACGlobal->TimeStepSys * DataGlobalConstants::SecInHour;
+        thisMSHeatPumpReport.ElecPowerConsumption = thisMSHeatPump.ElecPower * TimeStepSysSec; // + &
+        thisMSHeatPumpReport.HeatRecoveryEnergy = thisMSHeatPump.HeatRecoveryRate * TimeStepSysSec;
 
         thisMSHeatPumpReport.AuxElecHeatConsumption = 0.0;
         thisMSHeatPumpReport.AuxElecCoolConsumption = 0.0;
@@ -4276,19 +4276,19 @@ namespace HVACMultiSpeedHeatPump {
                                                  thisMSHeatPump.AuxOffCyclePower * (1.0 - state.dataHVACMultiSpdHP->SaveCompressorPLR);
         if (thisMSHeatPump.HeatCoolMode == ModeOfOperation::CoolingMode) {
             thisMSHeatPumpReport.AuxElecCoolConsumption =
-                thisMSHeatPump.AuxOnCyclePower * state.dataHVACMultiSpdHP->SaveCompressorPLR * ReportingConstant;
+                thisMSHeatPump.AuxOnCyclePower * state.dataHVACMultiSpdHP->SaveCompressorPLR * TimeStepSysSec;
         }
         else if (thisMSHeatPump.HeatCoolMode == ModeOfOperation::HeatingMode) {
             thisMSHeatPumpReport.AuxElecHeatConsumption =
-                thisMSHeatPump.AuxOnCyclePower * state.dataHVACMultiSpdHP->SaveCompressorPLR * ReportingConstant;
+                thisMSHeatPump.AuxOnCyclePower * state.dataHVACMultiSpdHP->SaveCompressorPLR * TimeStepSysSec;
         }
 
         if (thisMSHeatPump.LastMode == ModeOfOperation::HeatingMode) {
             thisMSHeatPumpReport.AuxElecHeatConsumption +=
-                thisMSHeatPump.AuxOffCyclePower * (1.0 - state.dataHVACMultiSpdHP->SaveCompressorPLR) * ReportingConstant;
+                thisMSHeatPump.AuxOffCyclePower * (1.0 - state.dataHVACMultiSpdHP->SaveCompressorPLR) * TimeStepSysSec;
         } else {
             thisMSHeatPumpReport.AuxElecCoolConsumption +=
-                thisMSHeatPump.AuxOffCyclePower * (1.0 - state.dataHVACMultiSpdHP->SaveCompressorPLR) * ReportingConstant;
+                thisMSHeatPump.AuxOffCyclePower * (1.0 - state.dataHVACMultiSpdHP->SaveCompressorPLR) * TimeStepSysSec;
         }
 
         if (thisMSHeatPump.FirstPass) {
