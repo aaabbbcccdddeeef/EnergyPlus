@@ -11,7 +11,9 @@ Then you can browse the built docs at: `doc/readthedocs/sphinx/static/c_prebuilt
 ## Building the Sphinx (Python) Documentation
 The Sphinx documentation is essentially the main documentation engine, since it is what gets executed by ReadTheDocs.
 Make sure that your currently active Python version has Sphinx installed (`pip install sphinx`).
-Also, this process will build the Doxygen based C documentation, so you'll need that installed as well.
+The documentation also covers the EpJSON schema.
+To generate the schema documentation, it uses the `sphinx-jsonschema` which should be pip installed as well.  
+Also, this process will build the Doxygen based C documentation, so you'll need that installed as well, `apt install doxygen`.
 Move into the Python API doc folder: `cd doc/readthedoc/sphinx/`.
 Run the Sphinx built Makefile: `make html`.
 Browse the built docs at: `doc/readthedoc/sphinx/_build/html/index.html`

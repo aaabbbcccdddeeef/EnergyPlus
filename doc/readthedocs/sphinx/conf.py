@@ -105,74 +105,74 @@ generated_schema_file = repo_root / 'idd' / 'Energy+.schema.epJSON.in'  # I know
 if not generated_schema_file.exists():
     raise Exception("Generated schema file did not exist, aborting.")
 print("* Generated schema existence confirmed")
-with generated_schema_file.open() as f:
-    o = load(f)
-
-print("* Processing schema into RTD contents")
-rtd_out = ""
-# schema_version_number = o["epJSON_schema_version"]
-# schema_version_sha = o["epJSON_schema_build"]
-# h.write(f"<h1>Schema {schema_version_number} - {schema_version_sha}</h1>")
-idf_objects: dict = o["properties"]
-rtd_out += f"{len(idf_objects)} objects in all.\n\n"
-
-object_entries_by_group = dict()
-
-all_group_names = list()
-for obj_name, data in idf_objects.items():
-    group_name = data['group']
-    # wanting to persist order here, so just using list() not set()
-    if group_name not in all_group_names:
-        all_group_names.append(group_name)
-    details = ""
-    details += f"{obj_name}\n{'=' * len(obj_name)}\n\n"
-    if 'memo' in data:
-        memo = data['memo'].replace('*', '\\*').replace('|', '\\|')
-        details += f"{memo}\n"
-    pattern_props = data['patternProperties']
-    value_with_unknown_key = next(iter(pattern_props.values()))  # only key could be '.*' or something else
-    fields: dict = value_with_unknown_key['properties']
-    details += "\n* Fields\n\n"
-    for field_name, field_data in fields.items():
-        default_string = ''
-        if 'default' in field_data:
-            if obj_name == 'Version':
-                default_string = ' (Current Version)'
-            else:
-                default_data = str(field_data['default']).replace('*', '\\*')
-                default_string = f" (Default: {default_data})"
-        field_type = field_data.get('type', 'unknown field type')
-        this_field_type = field_type
-        if field_type == 'array' and 'items' in field_data:
-            this_field_type = 'Array of {'
-            for i, variable_name in enumerate(field_data['items']['properties']):
-                if i == 0:
-                    this_field_type += variable_name
-                else:
-                    this_field_type += ', ' + variable_name
-            this_field_type += '}'
-        details += f"    - `{field_name}` [{this_field_type}]{default_string}\n"
-    final_object_snippet = details + '\n'
-    if group_name in object_entries_by_group:
-        object_entries_by_group[group_name].append(final_object_snippet)
-    else:
-        object_entries_by_group[group_name] = [final_object_snippet]
-
-for group_name in all_group_names:
-    rtd_out += f"{group_name}\n{'*' * len(group_name)}\n\n"
-    for obj_snippet in object_entries_by_group[group_name]:
-        rtd_out += obj_snippet
-
-print("* Writing schema contents into template, saving at schema.rst")
-schema_template = sphinx_dir / 'in.schema.rst.in'
-with open(schema_template) as template:
-    template_text = template.read()
-
-output_schema_file = sphinx_dir / 'schema.rst'
-with open(output_schema_file, 'w') as out:
-    out.write(template_text.replace('{REPLACE_ME}', rtd_out))
-
-print("* Schema docs complete!")
+# with generated_schema_file.open() as f:
+#     o = load(f)
+#
+# print("* Processing schema into RTD contents")
+# rtd_out = ""
+# # schema_version_number = o["epJSON_schema_version"]
+# # schema_version_sha = o["epJSON_schema_build"]
+# # h.write(f"<h1>Schema {schema_version_number} - {schema_version_sha}</h1>")
+# idf_objects: dict = o["properties"]
+# rtd_out += f"{len(idf_objects)} objects in all.\n\n"
+#
+# object_entries_by_group = dict()
+#
+# all_group_names = list()
+# for obj_name, data in idf_objects.items():
+#     group_name = data['group']
+#     # wanting to persist order here, so just using list() not set()
+#     if group_name not in all_group_names:
+#         all_group_names.append(group_name)
+#     details = ""
+#     details += f"{obj_name}\n{'=' * len(obj_name)}\n\n"
+#     if 'memo' in data:
+#         memo = data['memo'].replace('*', '\\*').replace('|', '\\|')
+#         details += f"{memo}\n"
+#     pattern_props = data['patternProperties']
+#     value_with_unknown_key = next(iter(pattern_props.values()))  # only key could be '.*' or something else
+#     fields: dict = value_with_unknown_key['properties']
+#     details += "\n* Fields\n\n"
+#     for field_name, field_data in fields.items():
+#         default_string = ''
+#         if 'default' in field_data:
+#             if obj_name == 'Version':
+#                 default_string = ' (Current Version)'
+#             else:
+#                 default_data = str(field_data['default']).replace('*', '\\*')
+#                 default_string = f" (Default: {default_data})"
+#         field_type = field_data.get('type', 'unknown field type')
+#         this_field_type = field_type
+#         if field_type == 'array' and 'items' in field_data:
+#             this_field_type = 'Array of {'
+#             for i, variable_name in enumerate(field_data['items']['properties']):
+#                 if i == 0:
+#                     this_field_type += variable_name
+#                 else:
+#                     this_field_type += ', ' + variable_name
+#             this_field_type += '}'
+#         details += f"    - `{field_name}` [{this_field_type}]{default_string}\n"
+#     final_object_snippet = details + '\n'
+#     if group_name in object_entries_by_group:
+#         object_entries_by_group[group_name].append(final_object_snippet)
+#     else:
+#         object_entries_by_group[group_name] = [final_object_snippet]
+#
+# for group_name in all_group_names:
+#     rtd_out += f"{group_name}\n{'*' * len(group_name)}\n\n"
+#     for obj_snippet in object_entries_by_group[group_name]:
+#         rtd_out += obj_snippet
+#
+# print("* Writing schema contents into template, saving at schema.rst")
+# schema_template = sphinx_dir / 'in.schema.rst.in'
+# with open(schema_template) as template:
+#     template_text = template.read()
+#
+# output_schema_file = sphinx_dir / 'schema.rst'
+# with open(output_schema_file, 'w') as out:
+#     out.write(template_text.replace('{REPLACE_ME}', rtd_out))
+#
+# print("* Schema docs complete!")
 
 # then add the folder to the sphinx extra paths so the objects get included
 html_extra_path = ['_build_c']
@@ -207,6 +207,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
+    'sphinx-jsonschema'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -226,7 +227,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
