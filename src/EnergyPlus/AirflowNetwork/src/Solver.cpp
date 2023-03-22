@@ -10220,7 +10220,6 @@ namespace AirflowNetwork {
         using namespace DataLoopNode;
         auto &NumPrimaryAirSys = m_state.dataHVACGlobal->NumPrimaryAirSys;
         using DXCoils::SetDXCoilAirLoopNumber;
-        using Fans::SetFanAirLoopNumber;
         using HeatingCoils::SetHeatingCoilAirLoopNumber;
         using HVACStandAloneERV::GetStandAloneERVNodeNumber;
         using SplitterComponent::GetSplitterNodeNumbers;
@@ -10561,9 +10560,9 @@ namespace AirflowNetwork {
                     m_state.dataHVACFan
                         ->fanObjs[m_state.afn->DisSysCompCVFData(m_state.afn->AirflowNetworkCompData(AirflowNetworkLinkageData(i).CompNum).TypeNum)
                                       .FanIndex]
-                        ->AirLoopNum = AirflowNetworkLinkageData(i).AirLoopNum;
+                        ->AFNAirLoopNum = AirflowNetworkLinkageData(i).AirLoopNum;
                 } else {
-                    SetFanAirLoopNumber(m_state, n, AirflowNetworkLinkageData(i).AirLoopNum);
+                    Fans::SetFanAFNAirLoopNumber(m_state, n, AirflowNetworkLinkageData(i).AirLoopNum);
                 }
             }
             if (AirflowNetworkCompData(AirflowNetworkLinkageData(i).CompNum).EPlusTypeNum == iEPlusComponentType::COI) {

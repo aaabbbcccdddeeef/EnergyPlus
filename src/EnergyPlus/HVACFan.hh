@@ -141,7 +141,7 @@ namespace HVACFan {
         Real64 deltaPress;                      // Delta Pressure Across the Fan [N/m2]
         Real64 designElecPower;                 // design electric power consumption [W]
         int powerModFuncFlowFractionCurveIndex; // pointer to performance curve or table
-        int AirLoopNum;                         // AirLoop number
+        int AFNAirLoopNum = 0;                  // AirflowNetwork AirLoop number
         bool AirPathFlag;                       // Yes, this fan is a part of airpath
 
         // Mass Flow Rate Control Variables

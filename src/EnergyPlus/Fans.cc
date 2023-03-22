@@ -2542,8 +2542,8 @@ void ReportFan(EnergyPlusData &state, int const FanNum)
     Fan(FanNum).DeltaTemp = Fan(FanNum).OutletAirTemp - Fan(FanNum).InletAirTemp;
 
     if (Fan(FanNum).FanType_Num == FanType_SimpleOnOff) {
-        if (Fan(FanNum).AirLoopNum > 0) {
-            state.dataAirLoop->AirLoopAFNInfo(Fan(FanNum).AirLoopNum).AFNLoopOnOffFanRTF = Fan(FanNum).FanRuntimeFraction;
+        if (Fan(FanNum).AFNAirLoopNum > 0) {
+            state.dataAirLoop->AirLoopAFNInfo(Fan(FanNum).AFNAirLoopNum).AFNLoopOnOffFanRTF = Fan(FanNum).FanRuntimeFraction;
         }
     }
 }
@@ -3178,9 +3178,9 @@ void FanInputsForDesHeatGain(EnergyPlusData &state,
     }
 }
 
-void SetFanAirLoopNumber(EnergyPlusData &state, int const FanIndex, int const AirLoopNum)
+void SetFanAFNAirLoopNumber(EnergyPlusData &state, int const FanIndex, int const AirLoopNum)
 {
-    state.dataFans->Fan(FanIndex).AirLoopNum = AirLoopNum;
+    state.dataFans->Fan(FanIndex).AFNAirLoopNum = AirLoopNum;
 }
 
 } // namespace EnergyPlus::Fans

@@ -367,8 +367,8 @@ namespace HVACFan {
 
     FanSystem::FanSystem(EnergyPlusData &state, std::string const &objectName)
         : availSchedIndex(0), inletNodeNum(0), outletNodeNum(0), designAirVolFlowRate(0.0), speedControl(SpeedControlMethod::NotSet), deltaPress(0.0),
-          designElecPower(0.0), powerModFuncFlowFractionCurveIndex(0), AirLoopNum(0), AirPathFlag(false), fanIsSecondaryDriver(false),
-          m_fanType_Num(0), m_designAirVolFlowRateWasAutosized(false), m_minPowerFlowFrac(0.0), m_motorEff(0.0), m_motorInAirFrac(0.0),
+          designElecPower(0.0), powerModFuncFlowFractionCurveIndex(0), AirPathFlag(false), fanIsSecondaryDriver(false), m_fanType_Num(0),
+          m_designAirVolFlowRateWasAutosized(false), m_minPowerFlowFrac(0.0), m_motorEff(0.0), m_motorInAirFrac(0.0),
           m_designElecPowerWasAutosized(false), m_powerSizingMethod(PowerSizingMethod::Invalid), m_elecPowerPerFlowRate(0.0),
           m_elecPowerPerFlowRatePerPressure(0.0), m_fanTotalEff(0.0), m_nightVentPressureDelta(0.0), m_nightVentFlowFraction(0.0), m_zoneNum(0),
           m_zoneRadFract(0.0), m_heatLossesDestination(ThermalLossDestination::Invalid), m_qdotConvZone(0.0), m_qdotRadZone(0.0), m_numSpeeds(0),
@@ -1101,18 +1101,18 @@ namespace HVACFan {
         }
 
         if (speedControl == SpeedControlMethod::Continuous) {
-            if (AirLoopNum > 0) {
-                state.dataAirLoop->AirLoopAFNInfo(AirLoopNum).AFNLoopOnOffFanRTF = m_fanRunTimeFractionAtSpeed[0];
+            if (AFNAirLoopNum > 0) {
+                state.dataAirLoop->AirLoopAFNInfo(AFNAirLoopNum).AFNLoopOnOffFanRTF = m_fanRunTimeFractionAtSpeed[0];
             }
         } else {
-            if (AirLoopNum > 0) {
+            if (AFNAirLoopNum > 0) {
                 if (m_numSpeeds == 1) {
-                    state.dataAirLoop->AirLoopAFNInfo(AirLoopNum).AFNLoopOnOffFanRTF = m_outletAirMassFlowRate / m_maxAirMassFlowRate;
+                    state.dataAirLoop->AirLoopAFNInfo(AFNAirLoopNum).AFNLoopOnOffFanRTF = m_outletAirMassFlowRate / m_maxAirMassFlowRate;
                 } else {
                     if (m_outletAirMassFlowRate <= m_massFlowAtSpeed[0]) {
-                        state.dataAirLoop->AirLoopAFNInfo(AirLoopNum).AFNLoopOnOffFanRTF = m_outletAirMassFlowRate / m_massFlowAtSpeed[0];
+                        state.dataAirLoop->AirLoopAFNInfo(AFNAirLoopNum).AFNLoopOnOffFanRTF = m_outletAirMassFlowRate / m_massFlowAtSpeed[0];
                     } else {
-                        state.dataAirLoop->AirLoopAFNInfo(AirLoopNum).AFNLoopOnOffFanRTF = 1.0;
+                        state.dataAirLoop->AirLoopAFNInfo(AFNAirLoopNum).AFNLoopOnOffFanRTF = 1.0;
                     }
                 }
             }
