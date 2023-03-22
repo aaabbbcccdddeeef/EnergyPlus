@@ -186,6 +186,7 @@ namespace Fans {
         Real64 BalancedOutletMassFlowRate;
         int AFNAirLoopNum = 0;       // AirflowNetwork Airloop number
         Real64 DesignPointFEI = 0.0; // Fan Energy Index for the fan at the design operating point
+        bool isOnAirLoop = false;    // True if fan is on an airloop (not zone equipment or exahaust fan)
 
         // Default Constructor
         FanEquipConditions()

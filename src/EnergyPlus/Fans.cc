@@ -1180,9 +1180,10 @@ void InitFan(EnergyPlusData &state,
     if (!state.dataGlobal->SysSizingCalc && state.dataFans->MySizeFlag(FanNum)) {
 
         SizeFan(state, FanNum);
-        // Set the loop cycling flag
-        if (Fan(FanNum).FanType_Num == FanType_SimpleOnOff) {
-            if (state.dataSize->CurSysNum > 0) {
+        if (state.dataSize->CurSysNum > 0) {
+            Fan(FanNum).isOnAirLoop = true;
+            if (Fan(FanNum).FanType_Num == FanType_SimpleOnOff) {
+                // Set the loop cycling flag
                 state.dataAirLoop->AirLoopControlInfo(state.dataSize->CurSysNum).CyclingFan = true;
             }
         }
@@ -2510,6 +2511,9 @@ void UpdateFan(EnergyPlusData &state, int const FanNum)
         }
         Fan(FanNum).UnbalancedOutletMassFlowRate = state.dataHVACGlobal->UnbalExhMassFlow;
         Fan(FanNum).BalancedOutletMassFlowRate = state.dataHVACGlobal->BalancedExhMassFlow;
+    } else if (Fan(FanNum).isOnAirLoop) {
+        // make sure inlet has the same mass flow as outlet - but only for air loops
+        state.dataLoopNodes->Node(InletNode).MassFlowRate = Fan(FanNum).OutletAirMassFlowRate;
     }
 
     if (state.dataContaminantBalance->Contaminant.CO2Simulation) {

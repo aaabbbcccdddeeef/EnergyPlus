@@ -179,6 +179,9 @@ namespace HVACFan {
     {
         if (!state.dataGlobal->SysSizingCalc && m_objSizingFlag) {
             set_size(state);
+            if (state.dataSize->CurSysNum > 0) {
+                m_isOnAirLoop = true;
+            }
             m_objSizingFlag = false;
         }
 
@@ -1090,8 +1093,10 @@ namespace HVACFan {
         state.dataLoopNodes->Node(outletNodeNum).MassFlowRateMaxAvail = m_massFlowRateMaxAvail;
         state.dataLoopNodes->Node(outletNodeNum).MassFlowRateMinAvail = m_massFlowRateMinAvail;
 
-        // make sure inlet has the same mass flow
-        state.dataLoopNodes->Node(inletNodeNum).MassFlowRate = m_outletAirMassFlowRate;
+        // make sure inlet has the same mass flow as outlet - but only for air loops
+        if (m_isOnAirLoop) {
+            state.dataLoopNodes->Node(inletNodeNum).MassFlowRate = m_outletAirMassFlowRate;
+        }
 
         if (state.dataContaminantBalance->Contaminant.CO2Simulation) {
             state.dataLoopNodes->Node(outletNodeNum).CO2 = state.dataLoopNodes->Node(inletNodeNum).CO2;

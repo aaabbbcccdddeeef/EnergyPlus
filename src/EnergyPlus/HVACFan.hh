@@ -142,7 +142,7 @@ namespace HVACFan {
         Real64 designElecPower;                 // design electric power consumption [W]
         int powerModFuncFlowFractionCurveIndex; // pointer to performance curve or table
         int AFNAirLoopNum = 0;                  // AirflowNetwork AirLoop number
-        bool AirPathFlag;                       // Yes, this fan is a part of airpath
+        bool AirPathFlag;                       // Yes, this fan is a part of airpath (directly on a branch)
 
         // Mass Flow Rate Control Variables
         bool fanIsSecondaryDriver; // true if this fan is used to augment flow and may pass air when off.
@@ -230,8 +230,9 @@ namespace HVACFan {
         Real64 m_outletAirEnthalpy;
         bool m_objTurnFansOn;
         bool m_objTurnFansOff;
-        bool m_objEnvrnFlag;  // initialize to true
-        bool m_objSizingFlag; // initialize to true, set to false after sizing routine
+        bool m_objEnvrnFlag;        // initialize to true
+        bool m_objSizingFlag;       // initialize to true, set to false after sizing routine
+        bool m_isOnAirLoop = false; // True if fan is on an airloop (not zone equipment or exahaust fan)
 
         // report variables
         Real64 m_fanPower;       // Power of the Fan being Simulated [W]
